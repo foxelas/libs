@@ -1,0 +1,3 @@
+[submodule "libs/foxutils"]
+	path = libs/foxutils
+	url = https://github.com/foxelas/foxutils
