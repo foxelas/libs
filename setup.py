@@ -5,6 +5,7 @@ import shutil
 from distutils.core import setup
 from distutils.cmd import Command
 
+
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
     CLEAN_FILES = './build ./dist ./*.pyc ./*.tgz ./*.egg-info'.split(' ')
@@ -31,12 +32,14 @@ class CleanCommand(Command):
                 print(f"Cleaning {os.path.relpath(path)}")
                 shutil.rmtree(path)
 
+
 setup(
     name='libs',
     version='1.0.0',
-    packages=['libs', 'libs.pytube', 'libs.pytube.contrib', 'libs.streams', 'libs.anomalib', 'libs.anomalib.data',
-              'libs.anomalib.data.base', 'libs.anomalib.data.utils', 'libs.anomalib.data.utils.generators',
-              'libs.anomalib.utils', 'libs.anomalib.utils.cv', 'libs.anomalib.utils.cli', 'libs.anomalib.utils.hpo',
+    packages=['libs', 'libs.pytube', 'libs.pytube.contrib', 'libs.yolov7', 'libs.yolov7.utils', 'libs.yolov7.models',
+              'libs.streams', 'libs.anomalib', 'libs.anomalib.data', 'libs.anomalib.data.base',
+              'libs.anomalib.data.utils', 'libs.anomalib.data.utils.generators', 'libs.anomalib.utils',
+              'libs.anomalib.utils.cv', 'libs.anomalib.utils.cli', 'libs.anomalib.utils.hpo',
               'libs.anomalib.utils.sweep', 'libs.anomalib.utils.sweep.helpers', 'libs.anomalib.utils.loggers',
               'libs.anomalib.utils.metrics', 'libs.anomalib.utils.callbacks', 'libs.anomalib.utils.callbacks.nncf',
               'libs.anomalib.utils.callbacks.visualizer', 'libs.anomalib.config', 'libs.anomalib.deploy',
@@ -55,7 +58,8 @@ setup(
               'libs.anomalib.pre_processing', 'libs.anomalib.pre_processing.transforms',
               'libs.anomalib.post_processing', 'libs.anomalib.post_processing.normalization', 'libs.foxutils',
               'libs.foxutils.utils', 'libs.foxutils.utils.lightning_models', 'libs.foxutils.gradio',
-              'libs.foxutils.streams', 'libs.foxutils.feature_extractors'],
+              'libs.foxutils.streams', 'libs.foxutils.feature_extractors', 'libs.anonymization',
+              'libs.anonymization.utils'],
     classifiers=[
         'Development Status :: 0 - Dev',
         'Intended Audience :: Developers',
@@ -78,4 +82,3 @@ setup(
         'Source': '',
     },
 )
-
