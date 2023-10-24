@@ -1,5 +1,5 @@
-from anonymization.utils import box_processing
-from anonymization.utils import convert_coordinate
+from anonymization import box_processing
+from anonymization import convert_coordinate
 import numpy as np
 from PIL import Image, ImageFilter
 import tensorflow as tf
