@@ -58,14 +58,7 @@ setup(
               'libs.anomalib.post_processing', 'libs.anomalib.post_processing.normalization', 'libs.foxutils',
               'libs.foxutils.utils', 'libs.foxutils.utils.lightning_models', 'libs.foxutils.gradio',
               'libs.foxutils.streams', 'libs.foxutils.feature_extractors', 'libs.anonymization',
-              'libs.anonymization.utils', 'custom_models', 'custom_models.yolov7', 'custom_models.anonymization',
-              'custom_models.anonymization.model', 'custom_models.anonymization.model.car_person',
-              'custom_models.anonymization.model.car_person.ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03',
-              'custom_models.anonymization.model.car_person.ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync_2018_07_03.saved_model',
-              'custom_models.anonymization.model.face_license',
-              'custom_models.anonymization.model.face_license.face_license',
-              'custom_models.anonymization.model.face_license.face_license.saved_model',
-              'custom_models.anomaly_detection', 'custom_models.weather_detection', 'custom_models.vehicle_prediction'],
+              'libs.anonymization.utils'],
     classifiers=[
         'Development Status :: 0 - Dev',
         'Intended Audience :: Developers',
@@ -84,5 +77,6 @@ setup(
     project_urls={
         'Documentation': '',
         'Source': 'https://github.com/foxelas/libs',
+        'Custom models': './custom_models',
     },
 )
