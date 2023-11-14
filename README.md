@@ -16,6 +16,11 @@ To clean up the egg files:
 $ python setup.py clean     
 ```
 
+### Make requirements file: 
+```
+pipreqs --force --encoding=utf8 .
+```
+
 ### Add package requirement: 
 In the requirements.txt add the following line: 
 
