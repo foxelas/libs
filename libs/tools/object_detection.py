@@ -116,10 +116,14 @@ def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yol
         half = True
 
     opt = InParams()
-    opt.update(dict(device=device, save_txt=save_txt, save_img=save_img, classify=classify, half=half,
-                    weights=yolo_model + ".pt"))
+    opt.device = device
+    opt.save_txt = save_txt
+    opt.save_img = save_img
+    opt.classify = classify
+    opt.half = half
+    opt.weights = yolo_model + ".pt"
 
-    save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
+    save_dir = Path(increment_path(Path(str(opt.project)) / opt.name, exist_ok=opt.exist_ok))
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)
     opt.save_dir = save_dir
 
@@ -151,8 +155,8 @@ def detect_from_image(img, od_model, od_opt, device):
         od_img = od_img.unsqueeze(0)
 
     with torch.no_grad():
-        # temporarily disable gradient calculation.
-        # This is particularly useful when you're performing inference and can lead to faster and more memory-efficient computations.
+        # temporarily disable gradient calculation. This is particularly useful when you're performing inference and
+        # can lead to faster and more memory-efficient computations.
         od_pred = od_model(od_img, augment=od_opt.augment)[0]
         od_pred = non_max_suppression(od_pred, od_opt.conf_thres, od_opt.iou_thres, classes=od_opt.classes,
                                       agnostic=od_opt.agnostic_nms)
