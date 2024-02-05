@@ -118,7 +118,7 @@ def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yol
     opt = InParams()
     opt.update(dict(device=device, save_txt=save_txt, save_img=save_img, classify=classify, half=half,
                     weights=yolo_model + ".pt"))
- 
+
     save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)
     opt.save_dir = save_dir
