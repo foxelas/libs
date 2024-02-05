@@ -1,7 +1,4 @@
 import warnings
-
-from libs.foxutils.streams.stream_utils import LoadStreams
-
 warnings.filterwarnings("ignore", ".*Consider increasing the value of the `num_workers` argument*")
 
 import csv
@@ -17,7 +14,7 @@ import torch
 
 from libs.foxutils.utils import core_utils
 from libs.yolov7.models.experimental import attempt_load
-from libs.yolov7.utils.datasets import LoadImages, letterbox
+from libs.yolov7.utils.datasets import LoadImages, letterbox, LoadStreams
 from libs.yolov7.utils.general import check_img_size, check_imshow, \
     non_max_suppression, scale_coords, increment_path
 from libs.yolov7.utils.plots import plot_one_box
