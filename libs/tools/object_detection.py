@@ -303,6 +303,7 @@ def detect_from_img_list(img_list, save_img=True, save_txt=True, device=DEVICE, 
         logger.info(f"Detecting objects in {x}")
         img = read_open_cv(x)
         res_img, od_dict = detect_from_image(img, od_model, od_opt, device)
-        res_img.save(pathjoin('runs', x))
+        save_name = pathjoin('runs', x)
+        res_img.save(core_utils.mkdir_if_not_exist(save_name))
 
     logger.debug(f"Finito!")
