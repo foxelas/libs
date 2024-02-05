@@ -38,7 +38,6 @@ DEVICE = core_utils.device
 MODELS_DIR = core_utils.models_dir
 WEIGHTS_DIR = pathjoin(MODELS_DIR, "yolov7", "weights")
 YOLO_MODEL = pathjoin(WEIGHTS_DIR, "yolov7_training")
-RUNS_FOLDER = pathjoin("runs", "detect", "exp")
 
 logger.debug(f"Models dir: {MODELS_DIR}")
 
@@ -76,7 +75,7 @@ class InParams:
         self.iou_thres = 0.45
         self.name = "exp"
         self.nosave = False
-        self.project = "runs/detect",
+        self.project = pathjoin("runs", "detect")
         self.save_conf = False
         self.save_txt = True
         self.source = ""
@@ -120,7 +119,7 @@ def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yol
     opt.half = half
     opt.weights = yolo_model + ".pt"
 
-    save_dir = Path(increment_path(Path(str(opt.project)) / opt.name, exist_ok=opt.exist_ok))
+    save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)
     opt.save_dir = save_dir
 
