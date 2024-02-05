@@ -58,7 +58,7 @@ setup(
               'libs.anomalib.post_processing', 'libs.anomalib.post_processing.normalization', 'libs.foxutils',
               'libs.foxutils.utils', 'libs.foxutils.utils.lightning_models', 'libs.foxutils.gradio',
               'libs.foxutils.streams', 'libs.foxutils.feature_extractors', 'libs.anonymization',
-              'libs.anonymization.utils'],
+              'libs.anonymization.utils', 'libs.tools'],
     classifiers=[
         'Development Status :: 0 - Dev',
         'Intended Audience :: Developers',
