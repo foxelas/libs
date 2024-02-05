@@ -192,7 +192,7 @@ def detect(model, opt, image_source=None, file_list=None, custom_fps=None):
     if webcam:
         opt.view_img = check_imshow()
         cudnn.benchmark = True
-        dataset = LoadStreams(opt.source, custom_fps=custom_fps)
+        dataset = LoadStreams(opt.source)
     else:
         dataset = LoadImages(opt.source, img_size=opt.img_size, stride=opt.stride, file_list=file_list)
 
