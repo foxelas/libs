@@ -101,7 +101,7 @@ class InParams:
                 setattr(self, key, value)
 
 
-def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yolo_model=YOLO_MODEL):
+def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yolo_model=YOLO_MODEL, name="exp"):
     classify = False
     if device == "cuda" or device == "gpu":
         device = select_device("0")
@@ -118,6 +118,7 @@ def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yol
     opt.classify = classify
     opt.half = half
     opt.weights = yolo_model + ".pt"
+    opt.name = name
 
     save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)
