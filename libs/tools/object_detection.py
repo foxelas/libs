@@ -212,61 +212,64 @@ def detect(model, opt, image_source=None, file_list=None, custom_fps=None):
                 img = img.unsqueeze(0)
 
             # Inference
-            pred = model(img, augment=opt.augment)[0]
-            pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes,
-                                       agnostic=opt.agnostic_nms)
+            with torch.no_grad():
+                # temporarily disable gradient calculation. This is particularly useful when you're performing inference and
+                # can lead to faster and more memory-efficient computations.
+                pred = model(img, augment=opt.augment)[0]
+                pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes,
+                                           agnostic=opt.agnostic_nms)
 
-            for i, det in enumerate(pred):
-                if webcam:
-                    p, s, im0, frame = path[i], "%g: " % i, im0s[i].copy(), dataset.count
-                else:
-                    p, s, im0, frame = path, "", im0s, getattr(dataset, "frame", 0)
-
-                p = Path(p)
-                save_path = str(opt.save_dir / p.name)
-                txt_path = str(opt.save_dir / "labels" / p.stem) + (
-                    "" if dataset.mode == "image" else f"_{frame}")  # img.txt
-                s += "%gx%g " % img.shape[2:]
-                if len(det):
-                    det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-                    class_dict = {}
-                    for c in det[:, -1].unique():
-                        n = (det[:, -1] == c).sum()
-                        s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "
-                        class_dict[names[int(c)]] = int(n)
-
-                    for *xyxy, conf, cls in reversed(det):
-                        if opt.save_txt:
-                            with open(txt_path + ".csv", "w", newline="", encoding="utf-8") as csvfile:
-                                writer = csv.writer(csvfile)
-                                for new_k, new_v in class_dict.items():
-                                    writer.writerow([new_k, new_v])
-
-                        if opt.save_img or opt.view_img:
-                            label = f"{names[int(cls)]} {conf:.2f}"
-                            plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=2)
-
-                if opt.view_img:
-                    cv2.imshow(str(p), im0)
-                    cv2.waitKey(1)
-
-                if opt.save_img:
-                    if dataset.mode == "image":
-                        cv2.imwrite(save_path, im0)
+                for i, det in enumerate(pred):
+                    if webcam:
+                        p, s, im0, frame = path[i], "%g: " % i, im0s[i].copy(), dataset.count
                     else:
-                        if vid_path != save_path:
-                            vid_path = save_path
-                            if isinstance(vid_writer, cv2.VideoWriter):
-                                vid_writer.release()
-                            if vid_cap:
-                                fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                                w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                                h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                            else:
-                                fps, w, h = 30, im0.shape[1], im0.shape[0]
-                                save_path += ".mp4"
-                            vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
-                        vid_writer.write(im0)
+                        p, s, im0, frame = path, "", im0s, getattr(dataset, "frame", 0)
+
+                    p = Path(p)
+                    save_path = str(opt.save_dir / p.name)
+                    txt_path = str(opt.save_dir / "labels" / p.stem) + (
+                        "" if dataset.mode == "image" else f"_{frame}")  # img.txt
+                    s += "%gx%g " % img.shape[2:]
+                    if len(det):
+                        det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+                        class_dict = {}
+                        for c in det[:, -1].unique():
+                            n = (det[:, -1] == c).sum()
+                            s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "
+                            class_dict[names[int(c)]] = int(n)
+
+                        for *xyxy, conf, cls in reversed(det):
+                            if opt.save_txt:
+                                with open(txt_path + ".csv", "w", newline="", encoding="utf-8") as csvfile:
+                                    writer = csv.writer(csvfile)
+                                    for new_k, new_v in class_dict.items():
+                                        writer.writerow([new_k, new_v])
+
+                            if opt.save_img or opt.view_img:
+                                label = f"{names[int(cls)]} {conf:.2f}"
+                                plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=2)
+
+                    if opt.view_img:
+                        cv2.imshow(str(p), im0)
+                        cv2.waitKey(1)
+
+                    if opt.save_img:
+                        if dataset.mode == "image":
+                            cv2.imwrite(save_path, im0)
+                        else:
+                            if vid_path != save_path:
+                                vid_path = save_path
+                                if isinstance(vid_writer, cv2.VideoWriter):
+                                    vid_writer.release()
+                                if vid_cap:
+                                    fps = vid_cap.get(cv2.CAP_PROP_FPS)
+                                    w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                                    h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                                else:
+                                    fps, w, h = 30, im0.shape[1], im0.shape[0]
+                                    save_path += ".mp4"
+                                vid_writer = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+                            vid_writer.write(im0)
 
     if opt.save_txt or opt.save_img:
         s = f"\n{len(list(opt.save_dir.glob('labels/*.csv')))} labels saved to {opt.save_dir / 'labels'}" if opt.save_txt else ""
