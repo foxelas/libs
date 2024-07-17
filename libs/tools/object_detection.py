@@ -136,18 +136,21 @@ def load_object_detection_model(save_img=True, save_txt=True, device="cuda", yol
     return model, opt
 
 
-def detect_from_image(img, od_model, od_opt, device):
-    names = od_opt.names
-    colors = od_opt.colors
-
+def preprocessing(img, od_opt):
     # Padded resize
     od_img = letterbox(img, od_opt.img_size, od_opt.stride)[0]
     # Convert
     od_img = od_img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     od_img = np.ascontiguousarray(od_img)
-    od_img = torch.from_numpy(od_img).to(device)
+    od_img = torch.from_numpy(od_img).to(od_opt.device)
     od_img = od_img.half() if od_opt.half else od_img.float()
     od_img /= 255.0
+
+    return od_img
+
+
+def detect_from_image(img, od_model, od_opt):
+    od_img = preprocessing(img, od_opt)
     if od_img.ndimension() == 3:
         od_img = od_img.unsqueeze(0)
 
@@ -165,11 +168,11 @@ def detect_from_image(img, od_model, od_opt, device):
             det[:, :4] = scale_coords(od_img.shape[2:], det[:, :4], img.shape).round()
             for c in det[:, -1].unique():
                 n = (det[:, -1] == c).sum()
-                od_dict[names[int(c)]] = int(n)
+                od_dict[od_opt.names[int(c)]] = int(n)
 
             for *xyxy, conf, cls in reversed(det):
-                label = f"{names[int(cls)]} {conf:.2f}"
-                plot_one_box(xyxy, img, label=label, color=colors[int(cls)], line_thickness=2)
+                label = f"{od_opt.names[int(cls)]} {conf:.2f}"
+                plot_one_box(xyxy, img, label=label, color=od_opt.colors[int(cls)], line_thickness=2)
 
     od_img = Image.fromarray(img[:, :, ::-1])
 
@@ -301,12 +304,13 @@ def detect_from_video(model, opt, stream_link):
 
 def detect_from_img_list(img_list, save_img=True, save_txt=True, device=DEVICE, yolo_model=YOLO_MODEL):
     od_model, od_opt = load_object_detection_model(save_img, save_txt, device, yolo_model)
+    od_opt.device = device
     logger.debug(f"Available classes: {od_opt.names}")
 
     for x in img_list:
         logger.info(f"Detecting objects in {x}")
         img = read_open_cv(x)
-        res_img, od_dict = detect_from_image(img, od_model, od_opt, device)
+        res_img, od_dict = detect_from_image(img, od_model, od_opt)
         save_name = pathjoin('runs', x)
         core_utils.mkdir_if_not_exist(save_name)
         res_img.save(save_name)
